@@ -35,11 +35,17 @@ api:
 
 ota:
 
+dashboard_import:
+  package_import_url: github://wernerhp/esphome.centurion_d5_evo/centurion-d5-evo.yaml@main
+  import_full_config: false
+
 wifi:
   power_save_mode: NONE
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
+  
+improv_serial:
 
 captive_portal:
 
