@@ -1,9 +1,10 @@
 substitutions:
-  name: "centirion-d5-evo"
-  friendly_name: Centurion D5 Evo
+  name: "centurion-d5-evo"
+  friendly_name: "Centurion D5 Evo"
   comment: "Control your Centurion D5 Evo gate motor remotely."
   project_name: "wernerhp.esphome_centurion_d5_evo"
   project_version: "1.0.0"
+
   relay_1_pin: GPIO32
   relay_2_pin: GPIO33
   relay_3_pin: GPIO25
@@ -13,8 +14,8 @@ substitutions:
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
-  name_add_mac_suffix: true
   comment: ${comment}
+  name_add_mac_suffix: true
   
   project:
     name: ${project_name}
@@ -38,7 +39,6 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: ${name}
 
 captive_portal:
 
@@ -62,6 +62,9 @@ binary_sensor:
           - text_sensor.template.publish:
               id: status
               state: "Closed"
+          - lambda: |-
+              id(gate).current_operation = CoverOperation::COVER_OPERATION_IDLE;
+              id(gate).publish_state();
         invalid_cooldown: 100ms
 
       - timing: # Open
@@ -71,6 +74,9 @@ binary_sensor:
           - text_sensor.template.publish:
               id: status
               state: "Open"
+          - lambda: |-
+              id(gate).current_operation = CoverOperation::COVER_OPERATION_IDLE;
+              id(gate).publish_state();
         invalid_cooldown: 100ms
 
       - timing: # Closing
@@ -95,6 +101,9 @@ binary_sensor:
           - text_sensor.template.publish:
               id: status
               state: "Closing"
+          - lambda: |-
+              id(gate).current_operation = CoverOperation::COVER_OPERATION_CLOSING;
+              id(gate).publish_state();
         invalid_cooldown: 100ms
 
       - timing: # Opening
@@ -111,6 +120,9 @@ binary_sensor:
           - text_sensor.template.publish:
               id: status
               state: "Opening"
+          - lambda: |-
+              id(gate).current_operation = CoverOperation::COVER_OPERATION_OPENING;
+              id(gate).publish_state();
         invalid_cooldown: 100ms
 
       - timing: # Pillar light override
@@ -166,7 +178,7 @@ button:
     output: relay_1
     id: button_1
     disabled_by_default: true
-    duration: 500ms
+    duration: 1000ms
     name: "Open / Auto Close"
     icon: "mdi:gate"
   - platform: output
@@ -179,7 +191,7 @@ button:
   - platform: output
     output: relay_3
     id: button_3
-    duration: 500ms
+    duration: 1000ms
     name: "Pedestrian"
     icon: "mdi:walk"
 
@@ -248,4 +260,3 @@ sensor:
   - platform: wifi_signal
     name: "WiFi Signal"
     update_interval: 120s
-  
